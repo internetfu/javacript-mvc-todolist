@@ -1,0 +1,12 @@
+img {
+  width: 100%;
+  height: 230px;
+}
+
+.title {
+  text-align: center;
+
+  .nested {
+    color: red;
+  }
+}
