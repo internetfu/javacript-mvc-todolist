@@ -4,3 +4,4 @@ import Model from './js/Model';
 import View from './js/View';
 
 const app = new Controller(new Model(), new View());
+app.view.displayTodos(app.model.todos);
