@@ -2,12 +2,16 @@ import { todos } from '../data';
 
 export default class Model {
     constructor() {
-        this.todos = todos;
-        console.log(this.todos);
+        this.todos = JSON.parse(localStorage.getItem('todos')) || todos;
     }
 
     bindTodoListChanged(handler) {
         this.onTodoListChanged = handler;
+    }
+
+    _storeData(todos) {
+        this.onTodoListChanged(todos);
+        localStorage.setItem('todos', JSON.stringify(todos));
     }
 
     addTodo(todoText) {
@@ -20,6 +24,7 @@ export default class Model {
         };
 
         this.todos.push(todo);
+        this._storeData(this.todos);
     }
 
     editTodo(id, updatedText) {
@@ -30,12 +35,14 @@ export default class Model {
 
             return todo;
         });
+
+        this._storeData(this.todos);
     }
 
     deleteTodo(id) {
         this.todos = this.todos.filter(todo => todo.id !== id);
 
-        this.onTodoListChanged(this.todos);
+        this._storeData(this.todos);
     }
 
     toggleTodo(id) {
@@ -46,5 +53,7 @@ export default class Model {
 
             return todo;
         });
+
+        this._storeData(this.todos);
     }
 }
