@@ -16,6 +16,19 @@ export default class View {
         this.app = getElement('#root');
         this.todoList = getElement('.todo-list');
         this.form = getElement('.todo-form');
+        this.input = getElement('.add-todo');
+        this._temporaryText = '';
+        this._initLocalListeners();
+    }
+
+    _initLocalListeners() {
+        this.todoList.addEventListener('input', event => {
+            event.preventDefault();
+
+            if (event.target.className === 'edit') {
+                this._temporaryText = event.target.innerText;
+            }
+        });
     }
 
     get _todoText() {
@@ -46,7 +59,7 @@ export default class View {
 
                 const span = createElement('span');
                 span.contentEditable = true;
-                span.classList.add('editable');
+                span.classList.add('edit');
 
                 if (todo.complete) {
                     const strike = createElement('s');
@@ -71,6 +84,19 @@ export default class View {
             if (this._todoText) {
                 handler(this._todoText);
                 this._resetInput();
+            }
+        });
+    }
+
+    bindEditTodo(handler) {
+        this.todoList.addEventListener('focusout', event => {
+            event.preventDefault();
+
+            if (this._temporaryText) {
+                const id = parseInt(event.target.parentElement.id);
+                handler(id, this._temporaryText);
+
+                this._temporaryText = '';
             }
         });
     }
