@@ -6,6 +6,10 @@ export default class Model {
         console.log(this.todos);
     }
 
+    bindTodoListChanged(handler) {
+        this.onTodoListChanged = handler;
+    }
+
     addTodo(todoText) {
         const todosLength = this.todos.length;
 
@@ -29,7 +33,9 @@ export default class Model {
     }
 
     deleteTodo(id) {
-        this.todos.filter(todo => todo.id !== id);
+        this.todos = this.todos.filter(todo => todo.id !== id);
+
+        this.onTodoListChanged(this.todos);
     }
 
     toggleTodo(id) {

@@ -15,6 +15,7 @@ export default class View {
     constructor() {
         this.app = getElement('#root');
         this.todoList = getElement('.todo-list');
+        this.form = getElement('.todo-form');
     }
 
     get _todoText() {
@@ -26,9 +27,8 @@ export default class View {
     }
 
     displayTodos(todos) {
-        const todoListFirstChild = this.todoList.firstElementChild;
-        while (todoListFirstChild) {
-            this.todoList.removeChild(todoListFirstChild);
+        while (this.todoList.firstElementChild) {
+            this.todoList.removeChild(this.todoList.firstElementChild);
         }
 
         if (todos.length === 0) {
@@ -63,5 +63,38 @@ export default class View {
                 this.todoList.append(li);
             });
         }
+    }
+
+    bindAddTodo(handler) {
+        this.form.addEventListener('submit', event => {
+            event.preventDefault();
+            if (this._todoText) {
+                handler(this._todoText);
+                this._resetInput();
+            }
+        });
+    }
+
+    bindDeleteTodo(handler) {
+        this.todoList.addEventListener('click', event => {
+            event.preventDefault();
+            if (event.target.className === 'delete') {
+                const id = parseInt(event.target.parentElement.id);
+
+                handler(id);
+            }
+        });
+    }
+
+    bindToggleTodo(handler) {
+        this.todoList.addEventListener('change', event => {
+            event.preventDefault();
+
+            if (event.target.type === 'checkbox') {
+                const id = parseInt(event.target.parentElement.id);
+
+                handler(id);
+            }
+        });
     }
 }
